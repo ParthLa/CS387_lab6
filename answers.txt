@@ -1,3 +1,6 @@
+-- Q2
+match (a:Tweet) -[:Contains]-> (:Hashtag{tag:"proud"}) where a.text starts with "we" return a.text
+
 -- Q5
 MATCH (:User)-[:Follows]->(a:User) Return a.name, count(*) order by count(*) desc Limit 5;
 Answer:
