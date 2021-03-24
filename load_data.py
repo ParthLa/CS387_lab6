@@ -28,9 +28,9 @@ fw = open(write_file,'w')
 path = data_dir + node_files[0]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (h"
-	stmt3 = ":Hashtag {id:"
-	stmt5 = ", tag: '"
+	# stmt1 = "CREATE (h"
+	# stmt3 = ":Hashtag {id:"
+	# stmt5 = ", tag: '"
 	stmt7 = "})\n"
 	line_count = 0
 	for row in csv_reader:
@@ -45,9 +45,9 @@ with open(path,'r') as f:
 path = data_dir + node_files[1]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (t"
-	stmt3 = ":Tweet {id:"
-	stmt5 = ", text: '"
+	# stmt1 = "CREATE (t"
+	# stmt3 = ":Tweet {id:"
+	# stmt5 = ", text: '"
 	stmt7 = "})\n"
 	line_count = 0
 	for row in csv_reader:
@@ -61,9 +61,9 @@ with open(path,'r') as f:
 path = data_dir + node_files[2]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (u"
-	stmt3 = ":User {id:"
-	stmt5 = ", name: '"
+	# stmt1 = "CREATE (u"
+	# stmt3 = ":User {id:"
+	# stmt5 = ", name: '"
 	stmt7 = "})\n"
 	line_count = 0
 	for row in csv_reader:
@@ -82,15 +82,15 @@ with open(path,'r') as f:
 path = data_dir + relation_files[0]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (h"
-	stmt3 = ")-[:Contains]->(t"
-	stmt5 = ")\n"
+	# stmt1 = "CREATE (t"
+	# stmt3 = ")-[:Contains]->(h"
+	# stmt5 = ")\n"
 	# stmt7 = "'})\n"
 	line_count = 0
 	for row in csv_reader:
 		if(line_count!=0):
 			# stmt = stmt1 + row[0] + stmt3 + row[1] + stmt5
-			stmt = 'CREATE (h%s)-[:Contains]->(t%s)\n' %(row[0],row[1])
+			stmt = 'CREATE (t%s)-[:Contains]->(h%s)\n' %(row[0],row[1])
 			# stmt = stmt+stmt7
 			fw.write(stmt)
 		line_count = line_count + 1
@@ -98,9 +98,9 @@ with open(path,'r') as f:
 path = data_dir + relation_files[1]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (u"
-	stmt3 = ")-[:Follows]->(u"
-	stmt5 = ")\n"
+	# stmt1 = "CREATE (u"
+	# stmt3 = ")-[:Follows]->(u"
+	# stmt5 = ")\n"
 	line_count = 0
 	for row in csv_reader:
 		if(line_count!=0):
@@ -112,9 +112,9 @@ with open(path,'r') as f:
 path = data_dir + relation_files[2]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (t"
-	stmt3 = ")-[:Mentions]->(u"
-	stmt5 = ")\n"
+	# stmt1 = "CREATE (t"
+	# stmt3 = ")-[:Mentions]->(u"
+	# stmt5 = ")\n"
 	line_count = 0
 	for row in csv_reader:
 		if(line_count!=0):
@@ -126,9 +126,9 @@ with open(path,'r') as f:
 path = data_dir + relation_files[3]
 with open(path,'r') as f:
 	csv_reader = csv.reader(f,delimiter=',')
-	stmt1 = "CREATE (u"
-	stmt3 = ")-[:Sent]->(t"
-	stmt5 = ")\n"
+	# stmt1 = "CREATE (u"
+	# stmt3 = ")-[:Sent]->(t"
+	# stmt5 = ")\n"
 	line_count = 0
 	for row in csv_reader:
 		if(line_count!=0):
