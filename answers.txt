@@ -14,3 +14,6 @@ a.name		count(*)
 -- Q6
 MATCH path = (:User{name:"Ashley"})-[:Follows*]->(:User) return length(path) order by length(path) desc Limit 1;
 Answer: 19
+
+-- Q9
+match (a:User)-[:Sent]->(b:Tweet)-[:Contains]->(c:Hashtag), (d:User{name:"Thomas"})-[:Sent]->(e:Tweet)-[:Contains]->(f:Hashtag) where not null (c.tag intersect f.tag) return a.name
