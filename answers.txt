@@ -1,0 +1,74 @@
+-- Q1
+MATCH (a:User)-[:Sent]->(:Tweet)-[:Mentions]->(b:User) where b.name=a.name return a.name order by a.name;
+Answer:
+a.name
+"Elizabeth"
+"James"
+"Jessica"
+"John"
+"Karen"
+
+-- Q2
+match (a:Tweet) -[:Contains]-> (:Hashtag{tag:"proud"}) where a.text starts with "we" return a.text
+Answer: "we are ready to dance #roar #preschoolers #students #proud"
+
+-- Q3
+
+MATCH (u:User)-[:Sent]->(a:Tweet)<-[:Sent]-(u2:User{name:"Jessica"}) where u.name<>"Jessica" and not (a)-[:Contains]->() return u.name, a.text;
+Answer:
+u.name	a.text
+"Dorothy"	"carrying a gun wouldn't of helped if you can't take it in with you. gun control won't stop the black market! terrorism will get worse!"
+"Ashley"	"retweet if you agree!"
+"Susan"	"retweet if you agree!"
+"Thomas"	"retweet if you agree!"
+"Steven"	"retweet if you agree!"
+
+-- Q4
+
+MATCH (u:User)-[:Sent]->(a:Tweet)<-[:Sent]-(u2:User{name:"Jessica"}) where u.name<>"Jessica" and not (a)-[:Contains]->() and not (u)-[:Follows]->(u2) return u.name, a.text;
+
+Answer:
+u.name	a.text
+"Dorothy"	"carrying a gun wouldn't of helped if you can't take it in with you. gun control won't stop the black market! terrorism will get worse!"
+"Steven"	"retweet if you agree!"
+
+-- Q5
+MATCH (:User)-[:Follows]->(a:User) Return a.name, count(*) order by count(*) desc Limit 5;
+Answer:
+a.name		count(*)
+"Steven"	9
+"Elizabeth"	7
+"Jessica"	7
+"John"		6
+"James"		4
+
+-- Q6
+MATCH path = (:User{name:"Ashley"})-[:Follows*]->(:User) return length(path) order by length(path) desc Limit 1;
+Answer: 19
+
+-- Q7 (order not correct)
+match (a:User)-[:Follows]->(b:User), (d:User{name:"Thomas"})-[:Follows]->(e:User) where b.name = e.name return a.name, count(*) order by count(*) desc limit 5 ;
+
+-- Q9 (not completely correct)
+match (a:User)-[:Sent]->(b:Tweet)-[:Contains]->(c:Hashtag), (d:User{name:"Thomas"})-[:Sent]->(e:Tweet)-[:Contains]->(f:Hashtag) where c.tag = f.tag  return distinct a.name
+
+-- Q7
+Match (p:User)<-[:Follows]-(:User{name:"Thomas"}) with collect(p.name) as follow match (a:User)<-[:Follows]-(b:User) with b.name as uname, collect(a.name) as f, follow where uname<>"Thomas" return uname,size([x in f where x in follow]) as common order by common desc, uname limit 5;
+Answer:
+uname	common
+"Ashley"	4
+"John"	4
+"Richard"	4
+"Dorothy"	3
+"Susan"	3
+
+-- Q8
+//with text
+Match (p:User)<-[:Mentions]-(x:Tweet), (a:User)-[:Sent]->(q:Tweet) where not (a)-[:Follows]->(p) and a.name<>p.name and x.text=q.text return a.name as tweet_by, p.name as mentioned, q.text order by tweet_by;
+
+//with ID
+Match (p:User)<-[:Mentions]-(x:Tweet), (a:User)-[:Sent]->(q:Tweet) where not (a)-[:Follows]->(p) and a.name<>p.name and x.id=q.id return a.name as tweet_by, p.name as mentioned, q.text order by tweet_by;
+
+
+
+
