@@ -46,14 +46,10 @@ a.name		count(*)
 MATCH path = (:User{name:"Ashley"})-[:Follows*]->(:User) return length(path) order by length(path) desc Limit 1;
 Answer: 19
 
--- Q7 (order not correct)
-match (a:User)-[:Follows]->(b:User), (d:User{name:"Thomas"})-[:Follows]->(e:User) where b.name = e.name return a.name, count(*) order by count(*) desc limit 5 ;
-
--- Q9 (not completely correct)
-match (a:User)-[:Sent]->(b:Tweet)-[:Contains]->(c:Hashtag), (d:User{name:"Thomas"})-[:Sent]->(e:Tweet)-[:Contains]->(f:Hashtag) where c.tag = f.tag  return distinct a.name
-
 -- Q7
 Match (p:User)<-[:Follows]-(:User{name:"Thomas"}) with collect(p.name) as follow match (a:User)<-[:Follows]-(b:User) with b.name as uname, collect(a.name) as f, follow where uname<>"Thomas" return uname,size([x in f where x in follow]) as common order by common desc, uname limit 5;
+OR
+match (a:User)-[:Follows]->(b:User), (d:User{name:"Thomas"})-[:Follows]->(e:User) where b.name = e.name   return a.name, count(*) as cnt order by count(*) desc, a.name asc  limit 5 ;
 Answer:
 uname	common
 "Ashley"	4
@@ -69,6 +65,7 @@ Match (p:User)<-[:Mentions]-(x:Tweet), (a:User)-[:Sent]->(q:Tweet) where not (a)
 //with ID
 Match (p:User)<-[:Mentions]-(x:Tweet), (a:User)-[:Sent]->(q:Tweet) where not (a)-[:Follows]->(p) and a.name<>p.name and x.id=q.id return a.name as tweet_by, p.name as mentioned, q.text order by tweet_by;
 
-
+-- Q9 (not completely correct)
+match (a:User)-[:Sent]->(b:Tweet)-[:Contains]->(c:Hashtag), (d:User{name:"Thomas"})-[:Sent]->(e:Tweet)-[:Contains]->(f:Hashtag) where c.tag = f.tag  return distinct a.name
 
 
