@@ -17,12 +17,20 @@ import csv
 # CREATE (t[row[0]])-[:Mentions]->(u[row[1]])
 # CREATE (u[row[0]])-[:Sent]->(t[row[1]])
 
-data_dir = "data/data/"
+# CREATE (hi:Hashtag {tag:row[1]})
+# CREATE (ti:Tweet {text:row[1]})
+# CREATE (ui:User {name:row[1]})
+# CREATE (h[row[0]])-[:Contains]->(t[row[1]])
+# CREATE (u[row[0]])-[:Follows]->(u[row[1]])
+# CREATE (t[row[0]])-[:Mentions]->(u[row[1]])
+# CREATE (u[row[0]])-[:Sent]->(t[row[1]])
+
+data_dir = ""
 
 node_files = ["hashtags.csv","tweets.csv","users.csv"]
 relation_files = ["contains.csv","follows.csv","mentions.csv","sent.csv"]
 
-write_file = "cmds"
+write_file = "load-data.cypher"
 fw = open(write_file,'w')
 
 path = data_dir + node_files[0]
@@ -36,7 +44,8 @@ with open(path,'r') as f:
 	for row in csv_reader:
 		if(line_count!=0):
 			# stmt = stmt1 + row[0] + stmt3 + row[0] + stmt5 + row[1] + stmt7
-			stmt = 'CREATE (h%s:Hashtag {id:%s, tag:"%s"' %(row[0],row[0],row[1])
+			# stmt = 'CREATE (h%s:Hashtag {id:%s, tag:"%s"' %(row[0],row[0],row[1])
+			stmt = 'CREATE (h%s:Hashtag {tag:"%s"' %(row[0],row[1])
 			stmt = stmt+stmt7
 			fw.write(stmt)
 			# fw.write("CREATE (h%s:Hashtag {id: %s, tag: %d )".format(row[0],row[0],row[1]))
@@ -53,7 +62,8 @@ with open(path,'r') as f:
 	for row in csv_reader:
 		if(line_count!=0):
 			# stmt = stmt1 + row[0] + stmt3 + row[0] + stmt5 + row[1] + stmt7
-			stmt = 'CREATE (t%s:Tweet {id:%s, text:"%s"' %(row[0],row[0],row[1])
+			# stmt = 'CREATE (t%s:Tweet {id:%s, text:"%s"' %(row[0],row[0],row[1])
+			stmt = 'CREATE (t%s:Tweet {text:"%s"' %(row[0],row[1])
 			stmt = stmt+stmt7
 			fw.write(stmt)
 		line_count = line_count + 1
@@ -69,7 +79,8 @@ with open(path,'r') as f:
 	for row in csv_reader:
 		if(line_count!=0):
 			# stmt = stmt1 + row[0] + stmt3 + row[0] + stmt5 + row[1] + stmt7
-			stmt = 'CREATE (u%s:User {id:%s, name:"%s"' %(row[0],row[0],row[1])
+			# stmt = 'CREATE (u%s:User {id:%s, name:"%s"' %(row[0],row[0],row[1])
+			stmt = 'CREATE (u%s:User {name:"%s"' %(row[0],row[1])
 			stmt = stmt+stmt7
 			fw.write(stmt)
 		line_count = line_count + 1
