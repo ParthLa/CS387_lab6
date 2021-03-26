@@ -43,8 +43,8 @@ a.name		count(*)
 "James"		4
 
 -- Q6
-MATCH path = (:User{name:"Ashley"})-[:Follows*]->(:User) return length(path) order by length(path) desc Limit 1;
-Answer: 19
+match path = (:User{name:"Ashley"})-[:Follows*]->(a:User) with a.name as nm,min(length(path)) as lp where nm<>"Ashley" return  lp order by lp desc limit 1;
+Answer: 3 (Dorothy)
 
 -- Q7
 Match (p:User)<-[:Follows]-(:User{name:"Thomas"}) with collect(p.name) as follow match (a:User)<-[:Follows]-(b:User) with b.name as uname, collect(a.name) as f, follow where uname<>"Thomas" return uname,size([x in f where x in follow]) as common order by common desc, uname limit 5;
@@ -61,11 +61,59 @@ uname	common
 -- Q8
 //with text
 Match (p:User)<-[:Mentions]-(x:Tweet), (a:User)-[:Sent]->(q:Tweet) where not (a)-[:Follows]->(p) and a.name<>p.name and x.text=q.text return a.name as tweet_by, p.name as mentioned, q.text order by tweet_by;
-
 //with ID
 Match (p:User)<-[:Mentions]-(x:Tweet), (a:User)-[:Sent]->(q:Tweet) where not (a)-[:Follows]->(p) and a.name<>p.name and x.id=q.id return a.name as tweet_by, p.name as mentioned, q.text order by tweet_by;
 
--- Q9 (not completely correct)
+Answer:
+tweet_by	mentioned	q.text
+"Ashley"	"Karen"	"for her #bihday we got her a #nose #job @Karen #bihday #petunia we love you"
+"Ashley"	"Dorothy"	"@Dorothy ferrari will do it for the sake of the championship. this gp is clearly a turning point rb, ferrari,mercs..."
+"Ashley"	"Richard"	"its #friday! smiles all around via ig user: @Richard #cookies make people"
+"Dorothy"	"Richard"	"#alohafriday #time does #not #exist #positivevibes #hawaiian @Richard @Thomas @Susan @Jessica"
+"Dorothy"	"Thomas"	"#alohafriday #time does #not #exist #positivevibes #hawaiian @Richard @Thomas @Susan @Jessica"
+"Dorothy"	"Susan"	"#alohafriday #time does #not #exist #positivevibes #hawaiian @Richard @Thomas @Susan @Jessica"
+"Dorothy"	"Jessica"	"#alohafriday #time does #not #exist #positivevibes #hawaiian @Richard @Thomas @Susan @Jessica"
+"Dorothy"	"James"	"@James @Elizabeth welcome here ! i'm it's so #gr8 !"
+"Dorothy"	"Jessica"	"@Jessica my wife whom i adore had to miss your poland show because she had surgery. her name is bridget &amp; she's my everything."
+"Elizabeth"	"John"	"@Elizabeth @John thanks for #lyft credit i can't use cause they don't offer wheelchair vans in pdx. #disapointed #getthanked"
+"Elizabeth"	"John"	"watching the new episodes of @John on @Richard"
+"Elizabeth"	"Richard"	"watching the new episodes of @John on @Richard"
+"Elizabeth"	"Ashley"	"@Jessica @Ashley you might be. just have not shown here today. regurgitated talking points and name calling?"
+"Elizabeth"	"Thomas"	"@Thomas @Susan lumpy says i am a . prove it lumpy."
+"Elizabeth"	"Richard"	"@Richard lets fight against #love #peace"
+"James"	"Thomas"	"@Thomas hey, white people: you can call people 'white' by @Susan #race #identity #med"
+"James"	"Susan"	"@Thomas hey, white people: you can call people 'white' by @Susan #race #identity #med"
+"Jessica"	"Richard"	"@Richard camping tomorrow @Thomas @Susan @Jessica @Ashley @Steven @Dorothy @Karen danny"
+"Jessica"	"Thomas"	"@Richard camping tomorrow @Thomas @Susan @Jessica @Ashley @Steven @Dorothy @Karen danny"
+"Jessica"	"Susan"	"@Richard camping tomorrow @Thomas @Susan @Jessica @Ashley @Steven @Dorothy @Karen danny"
+"Jessica"	"Ashley"	"@Richard camping tomorrow @Thomas @Susan @Jessica @Ashley @Steven @Dorothy @Karen danny"
+"Jessica"	"Dorothy"	"@Richard camping tomorrow @Thomas @Susan @Jessica @Ashley @Steven @Dorothy @Karen danny"
+"Jessica"	"Karen"	"@Richard camping tomorrow @Thomas @Susan @Jessica @Ashley @Steven @Dorothy @Karen danny"
+"Jessica"	"Susan"	"christina grimmie's last performance before being shot... via @Susan #christinarip #voice #christinagrimmie"
+"Jessica"	"John"	"happy father's day @John"
+"Jessica"	"Ashley"	"omg!!! loving this station!!! way to jam out at work!!! while getting work done of course!!!! #memories @Ashley"
+"John"	"Ashley"	"@Jessica #tgif #ff to my #gamedev #indiedev #indiegamedev #squad! @Ashley @Steven @Dorothy @Karen @James"
+"John"	"Dorothy"	"@Jessica #tgif #ff to my #gamedev #indiedev #indiegamedev #squad! @Ashley @Steven @Dorothy @Karen @James"
+"John"	"Karen"	"@Jessica #tgif #ff to my #gamedev #indiedev #indiegamedev #squad! @Ashley @Steven @Dorothy @Karen @James"
+"John"	"Susan"	"@Thomas offline now after a very nice and long night.. #snapchat @Susan #redhead #vermillionred"
+"Karen"	"John"	"thank you! super love it! zpamdelacruz #wedding# @John dolores, capas tarlac."
+"Karen"	"James"	"@Karen wrapping up #senseaboutmaths @James 6th @Elizabeth @John @Richard"
+"Karen"	"Elizabeth"	"@Karen wrapping up #senseaboutmaths @James 6th @Elizabeth @John @Richard"
+"Karen"	"John"	"@Karen wrapping up #senseaboutmaths @James 6th @Elizabeth @John @Richard"
+"Karen"	"Richard"	"@Karen wrapping up #senseaboutmaths @James 6th @Elizabeth @John @Richard"
+"Karen"	"Ashley"	"@Ashley rip to the fellow nohern ireland fan who sadley passed away tonight!.. gawa, forever singing and cheering on fire"
+"Karen"	"Dorothy"	"my mom shares the same bihday as @Dorothy bihday snake! see you this weekend"
+"Karen"	"Dorothy"	"#hump on that #hump day #humpers @Dorothy edwardsville, pennsylvania"
+"Karen"	"Ashley"	"@Ashley i am so jealous of you right now.... #chatiado"
+"Steven"	"James"	"off to concelebrate at the #albanpilgrimage for the first time. @James"
+
+-- Q9 
+match (a:User)-[:Sent]->(b:Tweet)-[:Contains]->(c:Hashtag) where (:User{name:"Thomas"})-[:Sent]->(:Tweet)-[:Contains]->(c) and a.name<>"Thomas" return distinct a.name;
+ANSWER:
+"Elizabeth"
+"John"
+THE BELOW DID NOT WORK:
 match (a:User)-[:Sent]->(b:Tweet)-[:Contains]->(c:Hashtag), (d:User{name:"Thomas"})-[:Sent]->(e:Tweet)-[:Contains]->(f:Hashtag) where c.tag = f.tag  return distinct a.name
 
-
+-- Q10 (NOT CORRECT)
+Match (p:User)<-[:Follows]-(:User{name:"Thomas"}) with collect(p.name) as follow match (a:User)<-[:Follows]-(b:User) with b.name as uname, collect(a.name) as f, follow where uname<>"Thomas" order by size([x in f where x in follow]) desc, uname limit 5 with collect(uname) as l, match (:User)-[:Follows]->(b:User) where all (match (a:User)-[:Follows]->(b:User) where a in l) return b.name;
